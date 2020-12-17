@@ -53,6 +53,8 @@ const isPasswordQualified = (str, isNewPolicy) => {
 
 findPasswords("./02-input.txt", false);
 // Output: 655 valid passwords found
+
 findPasswords("./02-input.txt", true);
+// Output: 673 valid passwords found
 
 // console.log(isPasswordQualified("6-9 b: nbvrbptfbbnbxb"));
