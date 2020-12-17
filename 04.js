@@ -8,41 +8,72 @@ const { getData } = require("./helpers");
 
 const requiredParameters = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
 
+const valueValid = (param, value) => {
+  value = value.trim(); // Just in case whitespace throws it off
+  switch (param) {
+    case 'byr':
+      if (isNaN(Number(value)) || Number(value) < 1920 || Number(value) > 2002) return false 
+      else return true;
+    case 'iyr':
+      if (isNaN(Number(value)) || Number(value) < 2010 || Number(value) > 2020) return false 
+      else return true;
+    case 'eyr':
+      if (isNaN(Number(value)) || Number(value) < 2020 || Number(value) > 2030) return false 
+      else return true;
+    case 'hgt':
+      if (value.match(/^[0-9]{3}cm$/)) {
+        const heightInCm = Number(value.substring(0, 3));
+        if (heightInCm >= 150 && heightInCm <= 193) return true;
+        else return false;
+      }
+      if (value.match(/^[0-9]{2}in$/)) {
+        const heightInInch = Number(value.substring(0, 2));
+        if (heightInInch >= 59 && heightInInch <= 76) return true;
+        else return false;
+      }
+      return false;
+    case 'hcl':
+      if (value.match(/^#[0-9a-f]{6}$/)) return true
+      else return false;
+    case 'ecl':
+      if (['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'].includes(value)) return true
+      else return false;
+    case 'pid':
+      if (value.match(/^[0-9]{9}$/)) return true
+      else return false;
+  }
+};
 
-const isValid1 = (obj, params) => {
+const isValid = (obj, params, strict) => {
   for (const param of params) {
-    if (!Object.keys(obj).includes(param)) {
+    // First check if the object contains all the keys, and for each key found, check if the value is valid
+    // A single error makes the whole passport invalid
+    if (Object.keys(obj).includes(param)) {
+      if (strict && !valueValid(param, obj[param])) return false;
+    } else {
       return false;
     }
   }
   return true;
 };
 
-const isValid2 = (obj, params) => {
-  for (const param of params) {
-    if (!Object.keys(obj).includes(param)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-async function countValidPassports(checkValid) {
-  const rawData = await getData("04-input.txt", "\n\n", true);
+async function countValidPassports(strict) {
+  const rawData = await getData("04-input.txt", "\n\n", false);
   const data = rawData.map(passport => parseJson(passport));
   console.log('Last few: ', data[data.length - 3], 'and', data[data.length - 2], 'and', data[data.length - 1]);
   let counter = 0;
   for (const passport of data) {
-    if (isValid1(passport, requiredParameters)) {
+    if (isValid(passport, requiredParameters, strict)) {
       counter++;
     }
   }
-  console.log(`${counter} valid passports identified!`);
+  console.log(`Strict is ${strict}. ${counter} valid passports identified!`);
 }
 
 countValidPassports(false);
-// Output: "260 valid passports found"
+// Output: "Strict is false. 260 valid passports identified!"
 countValidPassports(true);
+// Output: "Strict is true. 153 valid passports identified!"
 
 const parseJson = (str) => {
   // Turns the format of the raw data into JSON. First replace spaces and newlines with commas, and add the needed quotes around keys and values
