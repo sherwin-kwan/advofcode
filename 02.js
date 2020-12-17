@@ -4,16 +4,12 @@
 // If true, increment counter by 1. If false, leave counter as is.
 // Return counter when the file read is finished.
 
-const { readFile } = require("fs").promises;
+const { getData } = require('./helpers');
 
-async function getData(fn) {
-  const contents = await readFile(fn, "utf-8");
-  const arr = contents.split("\n");
-  return arr;
-}
+getData('02-input.txt', '\n', false);
 
 const findPasswords = async (fn, isNewPolicy) => {
-  const arr = await getData(fn);
+  const arr = await getData(fn, '\n');
   let counter = 0;
   arr.forEach((str) => {
     // Iterate through passwords and find out how many are qualified
