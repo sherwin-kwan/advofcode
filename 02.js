@@ -1,12 +1,12 @@
+// Import file read function
+const { getData } = require('./helpers');
+
+
 // Have a counter variable which starts at 0
 // Iterate through the input array, reading one line at a time
 // For each line, check if the condition is met
 // If true, increment counter by 1. If false, leave counter as is.
 // Return counter when the file read is finished.
-
-const { getData } = require('./helpers');
-
-getData('02-input.txt', '\n', false);
 
 const findPasswords = async (fn, isNewPolicy) => {
   const arr = await getData(fn, '\n');

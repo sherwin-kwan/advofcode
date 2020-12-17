@@ -4,4 +4,6 @@
 
 const { getData } = require('./helpers');
 
+async function 
+
 getData('04-input.txt', '\n\n', true);
