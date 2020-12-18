@@ -7,7 +7,7 @@ class Exercise3
   # Iterate from 0 to (height of repeating pattern) and find whether (3x, y) has a tree. Increment counter when a tree is found.
   # Return counter
 
-  data = open("03-input.txt").read.split("\n");  # Array of rows
+  data = open("03-input.txt").read.split("\n")  # Array of rows
   the_terrain = data.map do |row|
     row.split("")
   end
@@ -26,9 +26,9 @@ class Exercise3
       return false
     end
     if terrain[y][x % width] == "#"
-      return true
+      true
     elsif terrain[y][x % width] == "."
-      return false
+      false
     else
       raise "Unknown character identified"
     end
@@ -40,9 +40,7 @@ class Exercise3
     # Need to add 1 because integer division rounds down. If you go down 10 rows at a time, you'll have to iterate from 0 to 32, inclusive,
     # but 323/10 evaluates to 32
     (0...terrain.length / down + 1).each do |num|
-      if tree?(num * right, num * down, terrain)
-        counter += 1
-      end
+      counter += 1 if tree?(num * right, num * down, terrain)
     end
     puts "#{counter} trees encountered."
     counter
@@ -73,7 +71,6 @@ class Exercise3
   # [82, 173, 84, 80, 46]
   # Product is 4385176320
 
-  ########33
   # trees = 0
   # count = 0
 

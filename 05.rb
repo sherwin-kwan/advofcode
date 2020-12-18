@@ -4,7 +4,7 @@
 # Sort and find the "missing" seat number
 
 class Exercise5
-  data = open("05-input.txt").read.split("\n");  # Array of rows
+  data = open("05-input.txt").read.split("\n")  # Array of rows
 
   def self.get_seat_array(arr)
     seats = arr.map do |seat|
@@ -14,7 +14,6 @@ class Exercise5
       seat.to_i(2)
     end
     seats = seats.sort
-    return seats
   end
 
   def self.find_missing_seat(arr)
@@ -23,7 +22,7 @@ class Exercise5
     (arr[0]..arr[-1]).each do |seat_num|
       unless arr.index(seat_num)
         puts "Seat #{seat_num} is missing"
-        return
+        return nil
       end
     end
     puts "Couldn't find seat number"

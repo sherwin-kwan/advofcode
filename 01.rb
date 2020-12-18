@@ -7,7 +7,7 @@ class Exercise1
 
   arr_str = open("01-input.txt").read.split("\n")
   my_arr = arr_str.map do |str|
-    str = str.to_i
+    str.to_i
   end
 
   # Base case: Find a single number in an array
@@ -16,7 +16,7 @@ class Exercise1
   def self.find_matches(arr, nums_to_sum, desired_sum)
     arr = arr.sort
     if nums_to_sum == 1
-      return (arr.index(desired_sum)) ? [desired_sum] : nil
+      return (arr.index desired_sum) ? [desired_sum] : nil
     else
       arr.each do |num|
         potential_matches = find_matches(arr, nums_to_sum - 1, desired_sum - num)
@@ -32,7 +32,7 @@ class Exercise1
   def self.find_product(arr, nums_to_sum, desired_sum)
     matches = find_matches(arr, nums_to_sum, desired_sum)
     if matches
-      puts "The product of #{matches.join(", ")} is #{matches.reduce(:*)}"
+      puts "The product of #{matches.join(', ')} is #{matches.reduce(:*)}"
     else
       puts "No solution found"
     end
