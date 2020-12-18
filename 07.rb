@@ -136,5 +136,4 @@ class Exercise7 < Exercises
   solution2 = count_contained_bags("shiny gold", rulesB)
   puts "#{solution2} bags within my bag" # Output: 220149 bags within my bag
   
-
 end
