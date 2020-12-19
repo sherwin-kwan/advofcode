@@ -14,7 +14,7 @@ class Exercise1 < Exercises
   end
 
   def self.find_product(arr, nums_to_sum, desired_sum)
-    matches = find_matches(arr, nums_to_sum, desired_sum)
+    matches = find_matches(arr, nums_to_sum, desired_sum, true)
     if matches
       puts "The product of #{matches.join(', ')} is #{matches.reduce(:*)}"
     else
