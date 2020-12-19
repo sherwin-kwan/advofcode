@@ -1,4 +1,7 @@
-class Exercise1
+
+require_relative "exercises"
+
+class Exercise1 < Exercises
 
   # Read file
   # Use new line separator to create an array of the numbers
@@ -8,25 +11,6 @@ class Exercise1
   arr_str = open("01-input.txt").read.split("\n")
   my_arr = arr_str.map do |str|
     str.to_i
-  end
-
-  # Base case: Find a single number in an array
-  # Recursive case: with N numbers to sum. Pick first number, then find whether there's a match for the rest of the numbers
-
-  def self.find_matches(arr, nums_to_sum, desired_sum)
-    arr = arr.sort
-    if nums_to_sum == 1
-      return (arr.index desired_sum) ? [desired_sum] : nil
-    else
-      arr.each do |num|
-        potential_matches = find_matches(arr, nums_to_sum - 1, desired_sum - num)
-        if potential_matches
-          return [num].concat potential_matches
-        elsif num > (desired_sum / nums_to_sum) # If you are summing 2 numbers, a match will be found by the time you get to half of desired sum
-          return nil
-        end
-      end
-    end
   end
 
   def self.find_product(arr, nums_to_sum, desired_sum)

@@ -6,4 +6,24 @@ class Exercises
     p data if log
     data
   end
+
+  # Used for exercises 1 and 9
+  # Base case: Find a single number in an array
+  # Recursive case: with N numbers to sum. Pick first number, then find whether there's a match for the rest of the numbers
+
+  def self.find_matches(arr, nums_to_sum, desired_sum)
+    arr = arr.sort
+    if nums_to_sum == 1
+      return (arr.index desired_sum) ? [desired_sum] : nil
+    else
+      arr.each do |num|
+        potential_matches = find_matches(arr, nums_to_sum - 1, desired_sum - num)
+        if potential_matches
+          return [num].concat potential_matches
+        elsif num > (desired_sum / nums_to_sum) # If you are summing 2 numbers, a match will be found by the time you get to half of desired sum
+          return nil
+        end
+      end
+    end
+  end
 end
