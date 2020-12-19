@@ -42,6 +42,6 @@ class Exercise9 < Exercises
   end
 
   find_outlier(data_test, 5)
-  find_outlier(data, 25)
-  find_weakness(data, find_outlier(data, 25), 25)
+  find_outlier(data, 25) # Output: 31161678 at index 509 is unmatched.
+  find_weakness(data, find_outlier(data, 25), 25) # Outuput: Weakness found: 1212280 + 4241588 = 5453868
 end
