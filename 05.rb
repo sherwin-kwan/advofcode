@@ -13,7 +13,7 @@ class Exercise5
       # Now we have a seat number in binary. Next convert to decimal
       seat.to_i(2)
     end
-    seats = seats.sort
+    seats.sort
   end
 
   def self.find_missing_seat(arr)
