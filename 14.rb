@@ -21,47 +21,30 @@ class Exercise14 < Exercises
   def self.parse_segment(segment)
     lines = segment.split("\n")
     mask = lines.slice!(0)
-    p mask
     and_mask = mask.gsub(/X/, "1").to_i(2)
     or_mask = mask.gsub(/X/, "0").to_i(2)
-    puts "And mask is #{and_mask}, Or mask is #{or_mask}"
     parsed_lines = Hash.new
     lines.each do |line|
       parsing = line.slice(4..-1).split("] = ")
       memory_location = parsing[0].to_i
       value = parsing[1].to_i
       parsed_lines[memory_location] = (value | or_mask) & and_mask
-      puts "Changed #{memory_location} piece of memory to #{parsed_lines[memory_location]}"
+      puts "#{memory_location} piece of memory shall be set to #{parsed_lines[memory_location]}"
     end
     parsed_lines
   end
 
-  def self.compute_values(segments)
+  def self.compute_values(segments, parsing_lambda)
     memory = Hash.new
-    # for (const segment of segments) {
-    #   const newData = parseSegment(segment);
-    #   console.log('new data is: ', newData);
-    #   for (const key of Object.keys(newData)) {
-    #     if (Object.keys(memory).includes(key)) {
-    #       console.log('REPEAT KEY!!', key)
-    #     }
-    #   }
-    #   memory = {...memory, ...newData};
-    #   console.log(memory);
-    # }
-    # const sum = Object.values(memory).reduce((acc, val) => acc + val);
-    # console.log(`Sum is ${sum}`);
-    # return memory;
     segments.each do |segment|
-      new_data = parse_segment(segment)
-      p new_data
+      new_data = parsing_lambda.call(segment)
       new_data.each do |key, value|
         puts "Repeat key #{key}" if memory.keys.index(key)
         memory[key] = value
       end
       puts "Memory is now: "
-      p memory
     end
+    p memory
     sum = memory.values.reduce(:+)
     puts "Sum is #{sum}"
     memory
@@ -69,6 +52,52 @@ class Exercise14 < Exercises
 
   segments = parse_data("./14-input.txt")
   segments_test = parse_data("./14-test.txt")
+  segments_test_2 = parse_data("./14-test-2.txt")
   # compute_values(segments_test)
-  compute_values(segments)
+
+  # PART 2
+  # New parse segment method: 
+  # Create an array to save a list of memory locations
+  # Save the bits with the floating X in a separate array
+  # Generate a "base" memory location by using the mask by setting all Xs to 1
+  # Then, with a separate function, iterate through all the possible combinations of floating bits to generate an array of memory locations
+  # Return a hash with key-value pairs for those memory locations
+  # Then the previous method to set memory based on a hash with K-V pairs can be called. (so use a lambda)
+
+  def self.parse_segment_v2(segment)
+    lines = segment.split("\n")
+    mask = lines.slice!(0)
+    floating_bits = Array.new
+    parsed_lines = Hash.new
+    (0...mask.length).each do |ind|
+      # 1 means the right-most bit (the units bit) is floating. 4294967296 means the fourth bit (the 2 ^ 32 bit) is floating. etc.
+      floating_bits.push(2**ind) if mask.reverse[ind] == "X"
+    end
+    base_mask = mask.gsub(/X/, "1").to_i(2)
+    lines.each do |line|
+      parsing = line.slice(4..-1).split("] = ")
+      value = parsing[1].to_i
+      base = parsing[0].to_i | base_mask
+      (0...2**(floating_bits.length)).each do |num|
+        binary_string = num.to_s(2)
+        memory_location = base - generate_offset(floating_bits, binary_string)
+        parsed_lines[memory_location] = parsing[1].to_i
+      end
+    end
+    p parsed_lines
+    parsed_lines
+  end
+
+  def self.generate_offset(floating_bits, binary_string)
+    offset = 0
+    trial = binary_string.reverse.chars
+    (0...trial.length).each do |ind|
+      offset += floating_bits[ind] if trial[ind] == "1"
+    end
+    offset
+  end
+
+
+  compute_values(segments, method(:parse_segment)) # Output: Sum is 12512013221615
+  compute_values(segments, method(:parse_segment_v2)) # Output: Sum is 3905642473893
 end
