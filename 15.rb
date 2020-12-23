@@ -43,5 +43,7 @@ class Exercise15
   end
 
   play_game(real_start, 2020) # Output: The 2020-th number is 468
+  puts Time.now
   play_game(real_start, 30000000) # Output: The 30000000-th number is 1801753
+  puts Time.now
 end
