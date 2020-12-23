@@ -42,6 +42,6 @@ class Exercise15
     puts "The #{start.length}-th number is #{start[-1]}"
   end
 
-  play_game(real_start, 2020)
-  play_game(real_start, 30000000)
+  play_game(real_start, 2020) # Output: The 2020-th number is 468
+  play_game(real_start, 30000000) # Output: The 30000000-th number is 1801753
 end
