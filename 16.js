@@ -122,7 +122,7 @@ const solve = async (fn) => {
       })
       .map((val) => val.index);
   }
-  await writeFile("./16-output.js", JSON.stringify(possibilities));
+  await writeFile("./16-output.json", JSON.stringify(possibilities));
   return myTicket.split(',');
 };
 
