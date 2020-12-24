@@ -9,8 +9,8 @@ require 'pry'
 
 class Exercise 23
 
-  data = open("./23-input.txt").read.chomp.split("").map! {|str| str.to_i}
-  # data = "389125467".split("").map! {|str| str.to_i}
+  # data = open("./23-input.txt").read.chomp.split("").map! {|str| str.to_i}
+  data = "123456789".split("").map! {|str| str.to_i}
   @cups = data
   @current_index = 0
 
