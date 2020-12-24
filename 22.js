@@ -4,6 +4,7 @@
 // Iterate until one player runs out of cards
 
 const { getData } = require("./helpers");
+const inspect = require('util').inspect;
 
 const populateSets = async (fn) => {
   const decks = await getData(fn, "\n\n", false);
@@ -44,7 +45,7 @@ const playGame = (set1, set2) => {
       set2.add(card1);
     }
     i++;
-    if (i % 10000000 === 0) console.log(`Turn ${i}. Length is ${set1.size}`);
+    console.log(`Turn ${i}. Player 1 has ${Array.from(set1)}, Player 2 has ${Array.from(set2)}`);
   }
   return set1.size ? calculateWinningScore(Array.from(set1)) : calculateWinningScore(Array.from(set2));
 };
