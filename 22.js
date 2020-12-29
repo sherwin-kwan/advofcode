@@ -69,7 +69,7 @@ const playGame = (arr1, arr2, recursive, previous, level) => {
 const playOneRound = (arr1, arr2, recursive, level) => {
   const card1 = arr1.shift();
   const card2 = arr2.shift();
-  let subGameWinner = 0;
+  let subGameWinner = "";
   if (recursive && card1 <= arr1.length && card2 <= arr2.length) {
     const arr1Recursive = arr1.slice(0, card1);
     const arr2Recursive = arr2.slice(0, card2);
@@ -95,5 +95,10 @@ const playOneRound = (arr1, arr2, recursive, level) => {
 
 populateArrays("./22-input.txt").then((res) => {
   const previous = new Array();
+  playGame(res.arr1, res.arr2, false, previous, 0);
+});// Player 1 wins game after 785 turns with a score of: 33561
+
+populateArrays("./22-input.txt").then((res) => {
+  const previous = new Array();
   playGame(res.arr1, res.arr2, true, previous, 0);
-});
+}); // Player 1 wins game after 979 turns with a score of: 34594
