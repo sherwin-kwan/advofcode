@@ -1,3 +1,4 @@
+# First, decode rule 0:
 # parse the file in a bottom-up way
 # begin by looking for codes defined with no numbers, only letters
 # mass replace that code wherever it appears
@@ -8,42 +9,53 @@
 # Look for new codes only defined with letters, define it and mass replace
 # Iterate until the problem is solved
 
+# Next, take rest of file and count how many are identical to one of the strings in decoded rule 0
+
 require_relative "exercises"
 require "set"
 
 class Exercise19 < Exercises
+  start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
   def self.parse_data(fn)
-    data = parse_file(fn, "\n", false)
-    data.map! do |line|
+    rules, messages = parse_file(fn, "\n\n", false).map { |section| section.split("\n") }
+    rules.map! do |line|
       line.gsub!(/\"/, "")
       {
         code: line.split(":")[0],
         definitions: line.split(":")[1].split(" |"),
       }
     end
-    p data
-    data
+    {
+      rules: rules.sort { |a, b| a[:code].to_i <=> b[:code].to_i },
+      messages: messages,
+    }
   end
 
   def self.letters_only(definitions)
     definitions.each do |definition|
-      return false unless definition =~ /^\D+$/
+      return false unless definition =~ /^[\D\s]+$/
     end
     true
   end
 
-  def self.decode(data)
-    5.times do
-      solvable = data.filter { |rule| letters_only(rule[:definitions]) }
-      p solvable
+  def self.find_index_of_rule(rules, rule_num)
+    rules.index { |rule| rule[:code] == rule_num }
+  end
 
-      solvable.each do |solved_rule|
+  def self.decode(rules)
+    loop do
+      solved = rules.filter { |rule| letters_only(rule[:definitions]) }
+      rules = rules.filter { |rule| !letters_only(rule[:definitions]) }
+      solved_numbers = solved.map { |rule| rule[:code] }
+      p solved_numbers
+      solved.each do |solved_rule|
         # Remove leading spaces from decoded rules (" a" => "a")
-        data[solved_rule[:code].to_i][:definitions].map! { |definition| definition.gsub(/\s/, "") }
-        data.each do |rule|
+        solved[find_index_of_rule(solved, solved_rule[:code])][:definitions].map! { |definition| definition.gsub(/\s/, "") }
+        rules.each_with_index do |rule|
           new_definitions = rule[:definitions].flat_map do |definition|
             options = Set.new
-            str_to_replace = /\s#{solved_rule[:code]}/
+            str_to_replace = /\b#{solved_rule[:code]}\b/
             solved_rule[:definitions].each do |solved_definition|
               options.add definition.gsub(str_to_replace, solved_definition)
             end
@@ -51,11 +63,27 @@ class Exercise19 < Exercises
           end
           rule[:definitions] = new_definitions
         end
-        p data
       end
-
+      if find_index_of_rule(solved, "0")
+        solutions = solved[find_index_of_rule(solved, "0")][:definitions]
+        solutions.map {|solution| solution.gsub("\s", "")}
+        solutions.sort! {|a, b| a.length <=> b.length}
+        (0..10).each {|num| puts solutions[num]}
+        return solutions
+      end
     end
   end
 
-  decode(parse_data("./19-test.txt"))
+  def self.count_valid_messages(messages, definitions)
+    messages.filter { |message| definitions.include?(message) }.length
+  end
+
+  data = parse_data("./19-input.txt")
+  valid_phrases = decode(data[:rules])
+  (100000..1000100).each {|num| puts valid_phrases[num]}
+
+  puts "#{count_valid_messages(data[:messages], valid_phrases)} valid messages"
+
+  end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+  puts "Elapsed time: #{end_time - start_time} seconds"
 end
