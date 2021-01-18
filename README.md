@@ -2,6 +2,8 @@
 
 Advent of Code is an [annual challenge](https://adventofcode.com/2020) that runs during the 25 days leading up to Christmas.
 
+Check out my [Medium article](https://sherwinator.medium.com/what-i-learned-from-my-first-advent-of-code-ada891196050) where I comment on AoC 2020 and my thought process for many of these puzzles!
+
 ## About the Challenges
 
 Each day, a new two-part challenge is posted. The challenges require all kinds of algorithms to solve, but are language-agnostic.
