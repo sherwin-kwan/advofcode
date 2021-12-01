@@ -1,12 +1,11 @@
 file = "./01.txt"
 
-# Part 1
-arr = File.open(file).each_line.map(&:to_i)
-counter = 0
-(1...arr.count).each {|ind| counter += 1 if arr[ind] > arr[ind - 1]}
-puts counter
+def calc_depths(arr, increment)
+  counter = 0
+  (1...arr.count).each {|ind| counter += 1 if arr[ind] > arr[ind - increment]}
+  puts counter
+end
 
-# Part 2
-counter = 0
-(3...arr.count).each {|ind| counter += 1 if arr[ind] > arr[ind - 3] }
-puts counter
+input = File.open(file).each_line.map(&:to_i)
+calc_depths(input, 1) # Part 1: 1752
+calc_depths(input, 3) # Part 2: 1781
