@@ -1,19 +1,14 @@
 file = "./02.txt"
 
-data = File.open(file).each_line.map{|l| l.split(" ")}
+data = File.open(file).each_line.map{|l| [l.split(" ").first, l.split(" ").last.to_i]}
 location = depth = aim = 0
-
 data.each do |line|
-  case line[0]
-  when "forward"
-    location += line[1].to_i
-    depth += aim * line[1].to_i # Part 2 only
-  when "down"
-    aim += line[1].to_i 
-    # Part 1: depth += line[1].to_i
-  when "up"
-    aim -= line[1].to_i
-    # Part 1: depth -= line[1].to_i
+  if line[0] == "forward"
+    location += line[1]
+    depth += aim * line[1] # Part 2 only
+  else
+    adjust = line[0] == "down" ? line[1] : -line[1]
+    aim += adjust
   end
 end
 
