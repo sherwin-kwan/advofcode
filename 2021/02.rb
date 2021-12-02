@@ -9,6 +9,7 @@ data.each do |line|
   else
     adjust = line[0] == "down" ? line[1] : -line[1]
     aim += adjust
+    # depth += adjust # Part 1 only
   end
 end
 
