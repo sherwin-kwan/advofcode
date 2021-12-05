@@ -8,6 +8,7 @@ data.each do |vent_line|
   x_coord, y_coord = [x1, y1]
   x_increment = x2 > x1 ? 1 : x1 > x2 ? -1 : 0
   y_increment = y2 > y1 ? 1 : y1 > y2 ? -1 : 0
+  # next if x_increment * y_increment != 0 # Comment out this line for Part 2
   loop do
     sea[x_coord][y_coord] += 1
     break if x_coord == x2 && y_coord == y2
