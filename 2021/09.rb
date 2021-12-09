@@ -16,11 +16,9 @@ class BasinPuzzle
   end
 
   def flood_fill(r, c, basin_num)
-    adjacent(r, c).each do |x, y|
-      if !@basins[x][y] && @data[x][y] != 9
-        @basins[x][y] = basin_num
-        flood_fill(x, y, basin_num)
-      end
+    adjacent(r, c).filter{|x, y| !@basins[x][y] && @data[x][y] != 9}.each do |x, y|
+      @basins[x][y] = basin_num
+      flood_fill(x, y, basin_num)
     end
   end
 
@@ -40,7 +38,7 @@ class BasinPuzzle
       end
     end
     puts "Part 1: #{acc}"
-    puts "Part 2: #{@basins.flatten.compact.tally.sort{_2.last <=> _1.last}.first(3).map{_1.last}.reduce(&:*)}" 
+    puts "Part 2: #{@basins.flatten.compact.tally.map{|k, v| v}.sort.last(3).reduce(&:*)}" 
   end
 end
 
