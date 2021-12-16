@@ -1,84 +1,14 @@
-data = open("./16.txt").read.chars.map{'%04b' % _1.to_i(16)}.join("")
-p data
-
-
 def parse_packet(str)
-  version = str[0..2].to_i(2)
-  value = 0
-  length = 0
-  id = str[3..5].to_i(2)
+  version = str.slice!(0, 3).to_i(2)
+  id = str.slice!(0, 3).to_i(2)
   if id == 4
-    puts "Literal!"
-    result = parse_literal(str[6..])
-    value = result[:number]
-    length += result[:length] + 6
+    result = parse_literal(str)
   else
-    if str[6] == "0"
-      bits_to_parse = str[7..21].to_i(2)
-      result = parse_several_packets(str[22...22 + bits_to_parse], nil, id)
-      value = result[:value]
-      version += result[:version]
-      length += 22 + bits_to_parse
-    else
-      puts str[7..17].class
-      number_of_subpackets = str[7..17].to_i(2)
-      result = parse_several_packets(str[18..], number_of_subpackets, id)
-      value = result[:value]
-      version += result[:version]
-      length += 18 + result[:length]
-    end
-  end=
-  return {version: version, length: length, value: value, remainder: str[length..]}
-end
-
-def parse_several_packets(str, number_of_subpackets = nil, code)
-  versions = []
-  lengths = []
-  values = []
-  if number_of_subpackets
-    s = str.dup
-    result = nil
-    counter = 1
-    number_of_subpackets.times do 
-      puts "Parsing packet ##{counter}"
-      result = parse_packet(s)
-      versions << result[:version]
-      lengths << result[:length]
-      values << result[:value]
-      s = result[:remainder]
-      counter += 1
-    end
-  else
-    s = str.dup
-    result = nil
-    counter = 1
-    while s.include?("1") do
-      puts "Parsing packet indefinitely #{counter}"
-      result = parse_packet(s)
-      versions << result[:version]
-      lengths << result[:length]
-      values << result[:value]
-      s = result[:remainder]
-      counter += 1
-    end
+    mode = str.slice!(0) == "0" ? "bits" : "subpackets"
+    num_of_bits_or_subpackets = mode == "bits" ? str.slice!(0, 15).to_i(2) : str.slice!(0, 11).to_i(2)
+    result = parse_several_packets(str: str, code: id, count: num_of_bits_or_subpackets, method: mode)
   end
-  case code
-  when 0
-    value = values.sum
-  when 1
-    value = values.reduce(&:*)
-  when 2
-    value = values.min
-  when 3
-    value = values.max 
-  when 5
-    value = values[0] > values[1] ? 1 : 0
-  when 6
-    value = values[0] < values[1] ? 1 : 0
-  when 7
-    value = values[1] == values[0] ? 1 : 0
-  end
-  return {version: versions.sum, length: lengths.sum, value: value, remainder: str[lengths.sum..]}
+  return {version_sum: version + result[:version_sum], value: result[:value], remainder: result[:remainder]}
 end
 
 def parse_literal(str)
@@ -89,10 +19,39 @@ def parse_literal(str)
     counter += 1
     break if group[0] == "0"
   end
-  return {number: output.to_i(2), length: counter * 5}
+  return {version_sum: 0, value: output.to_i(2), remainder: str[5 * counter..]}
 end
 
-p parse_packet(data)
-# p parse_packet("10110001011")
+def parse_several_packets(str:, code:, count:, method:)
+  versions = []
+  values = []
+  if method == "subpackets"
+    count.times do 
+      result = parse_packet(str)
+      versions << result[:version_sum]
+      values << result[:value]
+      str = result[:remainder]
+    end
+  else # Known number of bits
+    part = str.slice!(0, count)
+    until part.empty? do
+      result = parse_packet(part)
+      versions << result[:version_sum]
+      values << result[:value]
+      part = result[:remainder]
+    end
+  end
+  case code
+  when 0 then value = values.sum
+  when 1 then value = values.reduce(&:*)
+  when 2 then value = values.min
+  when 3 then value = values.max 
+  when 5 then value = values[0] > values[1] ? 1 : 0
+  when 6 then value = values[0] < values[1] ? 1 : 0
+  when 7 then value = values[1] == values[0] ? 1 : 0
+  end
+  return {version_sum: versions.sum, value: value, remainder: str}
+end
 
-# 100 111 0 000000000010110 101 100 00101 111 100 01111 0000
+data = open("./16.txt").read.chars.map{'%04b' % _1.to_i(16)}.join("")
+p parse_packet(data) # Use version_sum for part 1, use value for part 2
