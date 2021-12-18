@@ -12,14 +12,14 @@ def parse_packet(str)
 end
 
 def parse_literal(str)
-  output = ""
-  counter = 0
-  str.chars.each_slice(5) do |group|
-    output << group[1..4].join("")
-    counter += 1
-    break if group[0] == "0"
-  end
-  return {version_sum: 0, value: output.to_i(2), remainder: str[5 * counter..]}
+output = ""
+counter = 0
+str.chars.each_slice(5) do |group|
+  output << group[1..4].join("")
+  counter += 1
+  break if group[0] == "0"
+end
+return {version_sum: 0, value: output.to_i(2), remainder: str[5 * counter..]}
 end
 
 def parse_several_packets(str:, code:, count:, method:)
@@ -53,5 +53,5 @@ def parse_several_packets(str:, code:, count:, method:)
   return {version_sum: versions.sum, value: value, remainder: str}
 end
 
-data = open("./16.txt").read.chars.map{'%04b' % _1.to_i(16)}.join("")
+data = open("./16.txt").read.chars.map{sprintf('%04b', _1.to_i(16))}.join("")
 p parse_packet(data) # Use version_sum for part 1, use value for part 2
