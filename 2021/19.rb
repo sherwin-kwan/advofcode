@@ -10,7 +10,7 @@ def three_distance(a, b, manhattan = false)
   return manhattan ? distances.sum : distances
 end
 
-def identify_common_beacons(data, num1, num2) # arr, int, int
+def identify_common_beacons(data, num1, num2)
   sc1, sc2 = [data[num1], data[num2]]
   beacons1 = sc1.count
   beacons2 = sc2.count
@@ -75,9 +75,8 @@ scanner_transforms = [[0, 1, 2]]
     end
   end
 end
-puts data.sum(&:count) - seen.flatten.uniq.count # Part 1
-puts Time.now - stamp
 
+# Go backwards to fill in any scanner locations that haven't been found yet
 (data.count - 1).downto(0).to_a.combination(2).each do |b, a|
   next if scanner_locations[a]
   try = identify_common_beacons(data, b, a)
@@ -88,9 +87,6 @@ puts Time.now - stamp
   end
 end
 
-def max_manhattan_distance(locations)
-  locations.combination(2).map{|a, b| three_distance(a, b, true)}.max
-end
-
-puts max_manhattan_distance(scanner_locations)
+puts data.sum(&:count) - seen.flatten.uniq.count # Part 1
+puts scanner_locations.combination(2).map{|a, b| three_distance(a, b, true)}.max # Part 2
 puts Time.now - stamp
