@@ -48,5 +48,5 @@ def scenarios(pl1, pl2, pl1_needed, pl2_needed, player_turn, cache)
 end
 
 stamp = Time.now
-scenarios(5, 9, 21, 21, 1, Hash.new).tap{puts [_1.real, _1.imaginary].max}
+scenarios(5, 9, 50, 50, 1, Hash.new).tap{puts [_1.real, _1.imaginary].max}
 p Time.now - stamp
