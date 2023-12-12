@@ -5,7 +5,7 @@ rows = File.open("./11.txt").read.split("\n")
 height = rows.count
 width = rows[0].length
 rows.each_with_index do |row, x|
-  row.split("").each_with_index do |char, y|
+  row.chars.each_with_index do |char, y|
     galaxies.push(x + y.i) if char == "#"
   end
 end

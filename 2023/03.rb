@@ -7,7 +7,7 @@ numbers = {}
 gears = {}
 lines.each_with_index do |line, row|
   current_num = ""
-  line.split("").each_with_index do |char, col|
+  line.chars.each_with_index do |char, col|
     case char
     when /\*/
       multiply.push(row + col.i)
